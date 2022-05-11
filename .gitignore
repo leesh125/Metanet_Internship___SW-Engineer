@@ -4,7 +4,9 @@
 
 ### Eclipse ###
 .metadata
-.classpath
+*.classpath
+*.project
+**/.settings/
 bin/
 tmp/
 *.tmp
