@@ -2,9 +2,17 @@ class Account {
     String id;
     String name;
     int balance;
+    
+	public Account() {}
 
-    String info() {
-        return "계좌번호: " + this.id + ", 이름: " + this.name + ", 잔액: " + this.balance;
+	public Account(String id, String name, int balance) {
+		this.id = id;
+		this.name = name;
+		this.balance = balance;
+	}
+
+	String info() {
+		return "계좌번호: " + this.id + ", 이름: " + this.name + ", 잔액: " + this.balance;
     }
 
     void deposit(int balance){
@@ -29,6 +37,14 @@ public class ClassTest2 {
         System.out.println(acc1.info());
         acc1.withdraw(5000);
         System.out.println(acc1.info());
+        
+        
+        Account acc2 = new Account("10002","고길동", 200000);
+        System.out.println(acc2.info());
+        acc2.deposit(200001);
+        System.out.println(acc2.info());
+        acc2.withdraw(500000);
+        System.out.println(acc2.info());
     }
 
 }
