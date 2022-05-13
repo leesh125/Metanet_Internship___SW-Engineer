@@ -8,20 +8,24 @@ public class Menu {
 	public static void main(String[] args) {
 		Bank bank = new Bank();
 		while(true) {
-			int selected = bank.selectMenu();
-			if(selected == 9) break;
-			switch(selected) {
-			case 1: bank.makeAccount();
-			case 2: 
-				id = inputId();
-				bank.deposit(id);
-			case 3: 
-				id = inputId();
-				bank.withdraw(id);
-			case 4: 
-				id = inputId();
-				bank.accountInfo(id);
-			case 5: bank.allAccountInfo();;
+			try {
+				int selected = bank.selectMenu();
+				if(selected == 9) break;
+				switch(selected) {
+				case 1: bank.makeAccount();
+				case 2: 
+					id = inputId();
+					bank.deposit(id);
+				case 3: 
+					id = inputId();
+					bank.withdraw(id);
+				case 4: 
+					id = inputId();
+					bank.accountInfo(id);
+				case 5: bank.allAccountInfo();;
+				}
+			}catch(NumberFormatException e) {
+				System.out.println("입력 형식이 바르지 않습니다.");
 			}
 		}
 

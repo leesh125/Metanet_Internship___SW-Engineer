@@ -1,4 +1,5 @@
 import emp.Employee;
+import emp.IBusinessTrip;
 import emp.PartTime;
 import emp.Permanent;
 import emp.Sales;
@@ -23,6 +24,10 @@ public class Company {
 		}
 		return sum / cnt;
 	}
+	
+	public void regBusinessTrip(IBusinessTrip emp, int day) {
+		
+	}
 
 	private void allEmpInfo() {
 		for(Employee emp: employees) {
@@ -35,9 +40,14 @@ public class Company {
 	
 	public static void main(String[] args) {
 		Company com = new Company();
-		com.addEmployee(new Permanent("10001", "È«±æµ¿", 5000000));
-		com.addEmployee(new Sales("10002", "±è±æµ¿", 30000, 3000));
-		com.addEmployee(new PartTime("10003", "°í±æµ¿", 160, 100000));
+		Permanent emp1 = new Permanent("10001", "È«±æµ¿", 5000000);
+		Sales emp2 = new Sales("10002", "±è±æµ¿", 30000, 3000);
+		PartTime emp3 = new PartTime("10003", "°í±æµ¿", 160, 100000);
+		com.addEmployee(emp1);  com.addEmployee(emp2);  com.addEmployee(emp3);
+		
+		// com.regBusinessTrip(emp1, 2); // error 
+		com.regBusinessTrip(emp2, 2);
+		com.regBusinessTrip(emp3, 2);
 		
 		com.allEmpInfo();
 		System.out.println("ÃÑ ±Þ¿©¾×: " + com.allTotalPay());

@@ -10,10 +10,11 @@ public class Bank {
 	
 	// 계좌개설
 	public void makeAccount() {
+		String id;
 		System.out.println("[계좌개설]");
-		System.out.print("계좌번호: ");
-		String id = sc.nextLine();
 		while(true) {
+			System.out.print("계좌번호: ");
+			id = sc.nextLine();
 			if(accounts.containsKey(id)) {
 				System.out.println("중복된 계좌번호 입니다.");
 				continue;
@@ -71,11 +72,13 @@ public class Bank {
 
 	// 계좌 정보 조회
 	public void accountInfo(String id) {
+		System.out.print("[계좌 조회]");
 		System.out.println(accounts.get(id).toString());
 	}
 	
 	// 모든 계좌 출력
 	public void allAccountInfo() {
+		System.out.print("[전체 계좌 조회]");
 		for(Account acc: accounts.values()) {
 			System.out.println(acc.toString());
 		}

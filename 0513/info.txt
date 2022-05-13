@@ -1,0 +1,6 @@
+#person info
+#Fri May 13 14:35:55 KST 2022
+name=hong
+weight=95.4
+age=20
+height=184.7
