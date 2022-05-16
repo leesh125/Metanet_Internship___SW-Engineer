@@ -1,5 +1,16 @@
 package acc;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -91,10 +102,135 @@ public class Bank {
 		System.out.println("3.출금");
 		System.out.println("4.계좌조회");
 		System.out.println("5.전체 계좌조회");
-		System.out.println("9.전체 계좌조회");
+		System.out.println("9.종료");
 		System.out.print("선택>> ");
 		int selected = Integer.parseInt(sc.nextLine());
 		return selected;
 	}
-
+	
+	public void saveAccount_b() {
+		FileOutputStream fos = null;
+		DataOutputStream dos = null;
+		try {
+			fos = new FileOutputStream("accs.bin");
+			dos = new DataOutputStream(fos);
+			dos.writeInt(accounts.size());
+			for(Account account: accounts.values()) {
+				dos.writeUTF(account.getId());
+				dos.writeUTF(account.getName());
+				dos.writeInt(account.getBalance());
+			}
+		} catch(IOException e) {
+			
+		} finally {
+			try {
+				if(dos != null) dos.close();
+			} catch(IOException e) {}
+		}
+	}
+	
+	public void loadAccount_b() {
+		FileInputStream fis = null;
+		DataInputStream dis = null;
+		try {
+			fis = new FileInputStream("accs.bin");
+			dis = new DataInputStream(fis);
+			int cnt = dis.readInt();
+			for(int i=0; i<cnt; i++) {
+				String id = dis.readUTF();
+				String name = dis.readUTF();
+				int balance = dis.readInt();
+				accounts.put(id, new Account(id,name,balance));
+			}
+		} catch(IOException e) {
+			
+		} finally {
+			try {
+				if(dis != null) dis.close();
+			}catch(IOException e) {}
+		}
+	}
+	
+	public void saveAccount_t() {
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+			fw = new FileWriter("accs.txt");
+			bw = new BufferedWriter(fw);
+			String accStr = "";
+			for(Account account:accounts.values()) {
+				accStr += account.getId();
+				accStr += "#" + account.getName();
+				accStr += "#" + account.getBalance();
+				bw.write(accStr);
+				bw.newLine();
+			}
+		}catch(IOException e) {
+			
+		} finally {
+			try {
+				if(bw != null) bw.close();
+			}catch(IOException e) {}
+		}
+	}
+	
+	public void loadAccount_t() {
+		FileReader fr = null;
+		BufferedReader br = null;
+		try {
+			fr = new FileReader("accs.txt");
+			br = new BufferedReader(fr);
+			String accStr = null;
+			while((accStr = br.readLine()) != null) {
+				String[] accCol = accStr.split("#");
+				accounts.put(accCol[0], new Account(accCol[0], accCol[1],
+							Integer.parseInt(accCol[2])));
+			}
+		} catch(IOException e) {
+			
+		} finally {
+			try {
+				if(br != null) br.close();
+			}catch(IOException e) {}
+		}
+	}
+	
+	public void saveAccount_o() {
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
+		try {
+			fos = new FileOutputStream("accs.ser");
+			oos = new ObjectOutputStream(fos);
+			oos.writeInt(accounts.size());
+			for(Account acc : accounts.values()) {
+				oos.writeObject(acc);
+			}
+		} catch(IOException e) {
+			
+		} finally {
+			try {
+				if(oos != null) oos.close();
+			}catch(IOException e) {}
+		}
+	}
+	
+	public void loadAccount_o() {
+		FileInputStream fis = null;
+		ObjectInputStream ois = null;
+		try {
+			fis = new FileInputStream("accs.ser");
+			ois = new ObjectInputStream(fis);
+			int cnt = ois.readInt();
+			for(int i=0; i<cnt; i++) {
+				Account acc = (Account)ois.readObject();
+				accounts.put(acc.getId(), acc);	
+			}
+		} catch(Exception e) {
+			
+		} finally {
+			try {
+				if(ois != null) ois.close();
+			}catch(IOException e) {}
+		}
+	}
 }
