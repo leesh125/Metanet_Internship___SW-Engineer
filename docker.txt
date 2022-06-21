@@ -1,0 +1,126 @@
+●Docker 정의
+
+●Container 정의
+ -> 하나의 OS 공유(Vmware로 OS 따로 안만들어도 돼서 여러개의 APP들(컨테이너)을 띄울 수 있음)
+  -커널: 하드웨어(메모리,CPU 등)를 컨트롤 하는 역할
+  -chroot: 최상위 Dir(윈도우 C, D 드라이브)
+  -레이어 : 이미지를 구성하는 요소
+
+● VM & Container
+
+Vm vs Container
+추상의 물리적인 하드웨어 || 추상의 애플리케이션 계층
+하이퍼바이저 || 호스트 커널
+Vm 마다 app이 있어 보안적임 || 여러개의 컨테이너를 포함한 도커가 다운되면 하위 모든 app 들 다운(컨테이너의 치명적 단점)
+
+
+●Container Orchestration
+다수의 컨테이너를 적절하게 분산하고 스케줄링하는 방법과 도구
+1. 쿠버네티스
+2. redhat 오픈시프트
+
+● Docker Engine
+도커 시작하면 dockerd(docker daemon)라는 이름이 프로세스로 올라옴
+dockerd에 요청을 보내는 client는 바로 docker(이미지 다운좀 해달라, 이미지 내부 좀 바꿔주라)
+그러면 dockerd는 응답을 해줌(dockerd가 서버, docker가 사용자)
+서로 통신할때 REST API(인터페이스:접근 통로)를 통해 커뮤니케이션 함
+
+● Docker Architecture (★★★)
+1. client
+- docker 명령어 사용
+
+○ 용어
+ - build 이미지 생성
+ - pull 이미지 다운로드
+    1.1 Registry를 거쳐 pull을 통해 이미지 다운
+    1.2 직접 이미지를 생성
+ - run 컨테이너 실행
+  -> 실행하기전 이미지가 있는지 이미지 체킹을 함, 없으면 만들거나 registry에서 다운로드
+      즉, docker pull과 docker run을 동시에 실행
+
+2. Docker_Host
+- docker daemon(서버)
+- client와 rest api로 통신함
+
+
+3. Registry
+-이미지 저장하는 곳 (Private, Public)
+
+● Docker Daemon
+-dockerd(서버) docker host(사용자)와 rest api를 통해 통신
+-docker object를 관리함(이미지, 컨테이너, 네트워크, 볼륨★)
+
+● Docker client Commands
+
+○ 도커의 구성요소
+ - registry(이미지 저장소)
+   -> node local에 이미지 pull(다운로드) push(업로드)
+
+ - node local(이미지 관련)
+   -> run 명령어 (이미지 다운후 실행하면 애플리케이션 하나 생성)
+   -> commit 명령어(컨테이너를 이용해서 이미지를 만듬)
+        - 별로 추천 안함(컨테이너는 프로세스, 작업이 이루어진다는 말은 불필요한 것들도 생성이 된다(ex. log file)
+   -> save 명령어(.TAR 파일로 이미지 저장), load(저장된 이미지 불러오기) 백업용
+   -> rmi 명령어 (이미지 삭제)
+   -> create 명령어(이미지를 중지된 상태의 컨테이너로 생성)
+   -> export 명령어(running 상태의 이미지를 .tar파일로 저장)
+   
+
+ - running(컨테이너 관련)
+   -> start(시작), stop(멈춤)
+   -> rm -f 명령어(실행중인 컨테이너 강제 삭제)
+   -> rm 명령어(중지된 컨테이너 삭제)
+   -> exec 명령어(외부에서 컨테이너 안의 명령을 실행하는 : 컨테이너 접속)
+
+● Docker & Podman
+도커의 단점은 dockerd 가 다운되면 그 하위 컨테이너 전부 다운
+Podman은 daemon(서버)가 없어도 이미지 생성 다운 등이 가능하다.
+
+● Docker swarm
+- scaling(컨테이너 갯수를 줄이거나 늘릴 수 있다.)
+
+subnet ip:213.0.113.0
+DHCP settings: 213.0.113.128 ~ 213.0.113.255
+NAT settings: gateway IP 213.0.113.2
+
+● CentOs 8 Stream
+1. Redhat 계열: Redhat Linux, Fedora Linux, CentOS Linux, Oracle Linux
+	        Redhat Linux 8 이전: Fedora > RHEL7 -> CentOS7
+			          upstream		downstream
+	        Redhab Linux 8부터: Fedora, CentOS 8 Stream -> RHEL8 -> Rocky, Alma
+			           upstream
+2. Ubuntu 계열: Ubuntu Linux,
+3. SUSE : OpenSuse Linux
+4. BSD: Netbsd, Openbsd
+Images consist of serveral LAYERS(여러개의 layer들이 합쳐져 하나의 이미지가 됨)
+MySQL -> MariaDB
+
+docker run --name mariadb-basic   -> --name : mariadb와 연관된 이름을 지음, mariadb-basic: 컨테이너 이름
+-d mariadb:latest -> mariadb:latest 이미지
+docker images : docker image 확인
+docker ps : docker container 확인
+lsof -i tcp:3306 -> container 내부에서 3306 port를 사용하는 컨테이너가 있으면 결과를 보여줌
+docker ps -a : active 상태인 컨테이너와 deactive 컨테이너(stop) 둘 다 보여주라
+docker rm -f mariadb2-basic: 중지를 하지않아도 강제로 컨테이너 삭제
+
+● Docker Container
+- commit 명령어로 현재 상태를 이미지로 만들 수 있음
+- 컨테이너 마다 격리되어 있음
+- 컨테이너가 삭제되면 데이터도 사라진다. -> persistent storage=volume(ex.하드디스크)으로 저장해놓음
+
+● Docker Container(stack 이미지로 되어있는거 중요함!!!★)
+- 이미지는 여러개의 layer로 되어있음(read-only)
+- 컨테이너는 writable 성질을 가지고 있음
+- Debian이라는 OS를 통해 apache, emacs등 이미지 사용 가능
+  -> OS(Debian)은 kernel이 필요
+
+Linux = bootfs + rootfs
+rootfs = /bin, /etc, /usr ...
+bootfs = Boot loader = Kernel
+
+● container
+inspect 명령어: 컨테이너 내부의 여러 정보를 확인 가능
+
+-p 8080:80  -> port forwarding
+8080: system 상의 포트(linux)
+80: 컨테이너의 포트
