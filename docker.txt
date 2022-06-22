@@ -124,3 +124,56 @@ inspect 명령어: 컨테이너 내부의 여러 정보를 확인 가능
 -p 8080:80  -> port forwarding
 8080: system 상의 포트(linux)
 80: 컨테이너의 포트
+
+================
+====2022-06-21====
+================
+
+- yum install httpd -y -> apache web server 다운
+- systemctl stop firewalld : 방화벽 stop
+- systemctl disable firewalld : 방화벽 막아버리기
+
+- systemctl start nginx (nginx) -> 아래와 같이 오류가 발생
+Job for nginx.service failed because the control process exited with error code.
+See "systemctl status nginx.service" and "journalctl -xe" for details.
+
+httpd와 nginx가 같은 포트를 사용하기 때문에 오류 -> 따라서 httpd를 stop하고 해야함
+
+● Docker Volume
+- container 안의 파일 변경 사항을 UnionFS을 통해 관리
+- write layer에는 이미지 layer의 데이터에서 변경된 사항 저장하므로 write layer
+삭제 시 데이터 사라짐(데이터 휘발성)
+-container의 데이터 휘발성 때문에 데이터를 container가 아닌 호스트에 저장
+
+mount = 하드디스크 - 디렉토리 연결
+-v 명령어 : 마운트
+
+
+● Docker images
+-한 개의 이미지는 다른 이미지를 기초로 하고있다.
+-Dockerfile : 내가 이미지를 만듬
+
+
+- commit 을 통해 생성한 이미지는 이름이 없음 -> tag를 통해 이름을 달아줘야함
+tag: 이미지의 버전정보를 덧붙힘
+
+○ 이미지 명령어
+logs : 로그 정보 확인 ★
+
+● Dockerfile
+- docker build -t web_img .(현재 디렉토리) : Dockerfile을 이미지로 빌드(생성)
+※ 아파치 index 위티 /var/www/html
+-docker diff httpd : 그 뒤에 변경사항이 있는지 (C: change, A:added)
+
+
+● Dockerfile 사용법
+copy: 로컬에만 있는 파일 복사 가능
+add: 로컬 뿐만 아니라 원격지의 파일까지 복사가능
+
+-chmod 755
+7 - read(4) write(2) excute(1) (user)
+5 - read(4) excute(1) (group)
+5 - read(4) excute(1) (other)
+
+● Docker Registry
+
