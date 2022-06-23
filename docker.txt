@@ -177,3 +177,49 @@ add: 로컬 뿐만 아니라 원격지의 파일까지 복사가능
 
 ● Docker Registry
 
+
+● Docker Network
+- docker 같은 경우 CNM(container network model)을 사용
+
+○ REMOTE Network Drivers
+- 네트워크 유형에 따라 지원되지 않는 기능도 있음(weave,calico 많이 사용)
+
+docker0: bridge(다리 역할), 각각의 컨테이너 ip는 veth를 통한 docker0(bridge)를 통해 연결
+veth: port
+
+
+○ Host Driver
+- port를 통해 host process와 container가 충돌나지 않게끔 한다.
+
+
+○ Macvlan
+- Macvlan 브리지 모드 사용해서  컨테이너 인터페이스와 상위 호스트 or 하위 인터페이스 간 연결 설정
+컴퓨터가 여러대일 때 연결해준다
+
+○ Overlay DRIVER
+- 다른 컴퓨터(컨테이너) 오버레이를 통해(터널을 뚫어) 네트워크를 갖게해준다
+
+● Docker Compose
+컨테이너 여러개를 만들 때 yaml file로 정의해서 명령어 하나로 전부 생성가능함
+
+● Orchestration
+- 컨테이너 오케스트레이션은 여러 클러스터 내의 마이크로 서비스를 기반으로 애플리케이션의 개별 컨테이너 작업을 
+조정, 관리하거나 예약하는 자동화하는 작업이다.
+- 컨테이너의 수명주기와 동적 환경을 관리하는 데 중점을 둔다
+
+● Docker swarm
+- 도커가 공식적으로 만든 orchestration tool
+- 각각의 컴퓨터는 도커를 실행중이어야함
+
+Replicated Service : 사용자가 원하는 수만큼 Task 동일하게 생성하여 실행되는 service
+
+● Docker Monitoring
+1. 데이터 수집 - cAdvisor, Node Exporter
+2. 수집한 데이터 저장 - prometheus 컨테이너
+3. 수집한 것들 시각화(firefox) - grafana
+
+-순서
+cAdvisor: 컨테이너 정보 수집 -> 프로테메우스 저장 -> 그라파나 시각화
+node-exporter: Host(도커 실행되는 서버) 정보 수집 -> 위와 같음
+
+dashboard에 893 추가 : 프로메테우스용 그라파나 인터페이스
