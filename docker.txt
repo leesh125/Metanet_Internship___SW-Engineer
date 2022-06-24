@@ -223,3 +223,43 @@ cAdvisor: 컨테이너 정보 수집 -> 프로테메우스 저장 -> 그라파�
 node-exporter: Host(도커 실행되는 서버) 정보 수집 -> 위와 같음
 
 dashboard에 893 추가 : 프로메테우스용 그라파나 인터페이스
+
+● Azure 가상머신 만들기
+
+○ 기본 사항:
+리소스 그룹 : Azure-metanet
+가상 머신 이름: FirstVM-Linux
+지역: Korea Central
+가용성 옵션: 가용성 영역
+가용성 영역: Zone 1
+보안 유형: 표준
+이미지: CentOs-based 7.9 - Gen2
+크기: Standard_DS1_v2 - 1 vcpu, 3.5 메모리 (60.23 달라)
+인증 형식: SSG 공개 키
+사용자 이름: nana
+키 쌍 이름: FirstVM-Linux.key
+공용 인바운드 포트: 선택한 포트
+인바운드 포트: HTTP 80, HTTPS 443, SSH 22
+
+○ 디스크
+OS 디스크 유형: 표준 HDD(로컬 중복 스토리지)
+vm으로 삭제 체크
+
+○ 네트워킹
+가상 네트워크: Azure-Metanet-vnet
+서브넷:default(10.0.0.0/24)
+공용 IP: FirstVm-Linux-ip
+NIC: 기본
+
+○관리
+부트진단: 사용 안 함
+
+
+https://www.netsarang.com/ko/xshell/
+-링크에서 체험판 다운후 링크 받기
+
+- scp - ssh를 이용한 copy
+
+○ html 저장장소
+- nginx = /usr/share/nginx/html
+- apache = /var/www/html , /usr/local/apache2/htdocs
