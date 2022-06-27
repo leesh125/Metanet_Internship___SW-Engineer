@@ -1,0 +1,62 @@
+● 쿠버네티스 설치
+
+쿠버네티스에선 컨테이너가 아닌 pod(이 안에 컨테이너가 있음)
+kubeadm init --apiserver-advertise-address=213.0.113.3 \
+> --pod-network-cidr=192.168.0.0/16 
+ - 213.0.113.3 IP 주소는 Worker 노드가 연결할 Master 노드의 IP 주소
+ - Calico network driver를 사용하려면  192.168.0.0 사용
+
+● 쿠버네티스 구조
+
+○ Master node
+- kube-api-server: 모든 서비스와 통신
+- etcd : 쿠버네티스의 데이터베이스(모든 클러스터 데이터 담는 db, 그래서 마스터노드는 최소 3개이상 생성해야함) 
+- kube-scheduler: worker 노드가 몇개가 실행되고 있는지 항상 알고있어야함
+- Control Plane Component : 어떤 노드에 어떤 pod를 배치하는지를 정하는 스케줄러
+- kube-controller-manager: kubernetes에 있는 거의 모든 오브젝트 상태 관리
+
+
+○ Worker node 
+- kubelet과 kube-proxy로 구성됨
+- kubelet: pod에서 컨테이너가 확실하게 동작하도록 관리
+- kube-proxt: pod에서 네트워킹이 가능하게 해줌(pod에도 ip 존재 -> 네트워킹 존재)
+
+
+● load balancer
+- 마스터 노드를 3개이상 구동시켜 한 노드가 다운되어도 다른 노드가 동작 가능하게끔
+- etcd만 따로 etcd cluster에 빼놓는 구조도 있음
+
+● kubernetes object - Pod
+- 쿠버네티스에서 배포할 수 있는 가장 작은 단위
+- 한 개 이상의 컨테이너와 스트로지, 네트워크 속성 가짐
+- pod내에 있는 container는 ip가 같지만 port를 다르게 하여 container 구분
+
+○ pod 구성 패턴 
+- sidecar : 원래 사용하려고 했던 기본 컨테이너 기능 확장/강화하는 용도 컨테이너 추가
+- ambassador: 외부에서 프록시 컨테이너가 여러 캐시에 연결되게끔 하는 패턴
+
+● kubernetes object - NameSpace
+- 한 쿠버네티스 클러스터내 논리적 분리 단위
+
+● Kubernetes Controller
+○ 종류: Replication Controller : Pod 관리하며 지정된 숫자로 Pod 기동시키고 관리
+  - Replication Controller 3개지로 구성되어 있음
+    - Selector : label 기반,  RC가 관리한 Pod 가지고 오는데 사용
+    - Replica 수: RC에 의해서 관리되는 Pod의 수로 그 숫자만큼 Pod 수 유지
+    - Pod template: Pod 추가로 기동할 때 어떻게 Pod 만들지 Pod에 대한 정보 (도커
+이미지, 포트, 라벨등)에 대한 정보 정의
+
+※ 쿠버네티스 삼대장(반드시 기억★★!!): service deployment pod
+
+● Delpoyment 방식
+1. Rolling Deployment
+- 일반적인 배포 의미하며 단순하게 Pod 구성하여 배포하는 전략
+- 구버전에서 신번전으로 트래픽 점진적으로 전환하는 배포 방식
+
+2. Blue/Green Deployment
+- 구버전을 블루, 신버전을  그린이라고 해서 붙여진 이름
+- 신버전 배포하고 일제히 전환하여 모든 연결 신버전을 바라보게 하는 전략
+
+3. Canary Delpoyment
+- 카나리아는 유독가스에 민감하여 유독가스 누출 위험 알리는 용도
+- 테스트를 해보고 문제가 없으면 전환, 문제가 있으면 멈춤
