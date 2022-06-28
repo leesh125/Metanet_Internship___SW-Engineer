@@ -60,3 +60,72 @@ kubeadm init --apiserver-advertise-address=213.0.113.3 \
 3. Canary Delpoyment
 - 카나리아는 유독가스에 민감하여 유독가스 누출 위험 알리는 용도
 - 테스트를 해보고 문제가 없으면 전환, 문제가 있으면 멈춤
+
+kubeadm join 213.0.113.3:6443 --token 9monvb.2rkmtboupp8tzxyc \
+	--discovery-token-ca-cert-hash sha256:e06321a42151578abce5262539d38eaf172f0b5b056f8b9caf003fa78825946a
+
+● Kubernetes Object: ConfigMap
+- 비기밀 데이터 키-값 상으로 저장하기 위해 사용하는 API 객체
+- 컨테이너에 필요한 환경설정 내용을 컨테이너와 분리해서 제공하기 위헌 kubernetes 기능(환경설정이 너무 길어서)
+
+● Kubernetes Volume
+- pod에 종속되는 디스크 - pod 컨테이너에서 접근하는 스토리지 단위
+
+● Kubernetes Volume 종류
+1. emptyDir(임시 볼륨)
+- 개별적인 Pod에 적용할 수 있는 Volume
+- Pod가 삭제될 경우 emptyDir 또한 삭제 -> Pod 내부 컨테이너 간에 공유해야하는 휘발성 데이터 저장
+
+2. hostpath(로컬 볼륨
+- 호스트 디렉터리 Pod와 공유해서 사용하는 방식
+- Pod가 삭제되어도 hostpath에 저장된 파일들은 호스트에 저장
+
+
+3. Network Volume
+  1. PV(PersistentVolume)
+    - 시스템 관리자가 실제 물리 디스크 생성한 후, 이 디스크를 PersistentVolume 이름으로 kubernetes에 등록
+    - 시스템 관리자가 생성한 물리 디스크를 kubernetes 클러스터에 표현
+  2. PVC(PersistentVolumeClaim)
+    - Pod 생성할 때, 볼륨 정의하고, 이 볼륨 정의 부분에 물리적 디스크에 대한 특성을 정의하는 것이 아니라 PVC 지정, 관리자가 생성한 PV와 연결
+    - Pod의 볼륨과 이 PV를 연결하는 관계가 PVC
+
+○ PV 상태 종류
+1. Available: PV가 생성되고 나면 사용 가능한 상태
+2. Bound : PVC(요청에 의해) 바인딩 되었을 때 상태
+3. Released : PVC가 삭제되어 요청이 없을 경우
+4. Fail : 모종의 이유로 문제가 생겼을 경우 
+
+PV(Persistent Volume)
+- ceph: storage 서버
+
+● PV & PVC Lifecycle
+1. Provisioning
+• 정적(static) 또는 동적(dynamic) PV 생성하는 단계
+• PV 생성이라는 단어를 프로비저닝이라고 불러도 모두 같은 의미
+
+2. Binding
+• PV를 PVC에 연결시키는 단계
+• PVC는 사용자가 요청하는 볼륨 PV에 요청하고 PV는 그에 맞는 볼륨 있으면 할당
+• PVC와 PV는 ClaimRef 사용하는 1:1 관계, 바인딩이 정상적으로 완료될 경우 bound 상태
+
+3. Using
+• Pod는 PVC를 볼륨으로 사용
+• 클러스터는 PVC 확인하여 바인딩된 PV 찾고 해당 볼륨 Pod에서 사용
+
+4. Reclaiming
+• PV는 기존에 사용했던 PVC가 아니더라도 다른 PVC로 재활용 가능
+• 사용이 종료된 PVC 삭제할 때, 사용했던 PV 데이터 어떻게 처리할지에 대한 설정
+
+● 4. Lifecycle Reclaiming 정책
+1. Retain
+• PVC가 삭제되어 Released 상태 되어도 실제 내부 파일 삭제하지 않는 정책
+• Persistent 한 데이터 계속해서 저장해야 하는 일반적인 방식
+• Released 상태의 PV는 다른 PVC에 의해 사용될 수 있는 상태 아님
+• Retain 사용하는 경우 PV 삭제한다고 해서 디스크 함께 삭제되는 것 아님
+
+2. Delete
+• PVC가 삭제되어 PV가 Released 상태가 되면 PV와 연결된 디스크 내부 자체 삭제
+• 직접 디스크 생성하고 PV 직접 연결하는 작업보다 Dynamic Provisioning 주로 사용
+
+kubeadm join 213.0.113.3:6443 --token ue3c28.oggwtx8mf3br91pa --discovery-token-ca-cert-hash sha256:8221f38874e818eafaf2cfe3cf477cf416bec3c0a88984f0acee21e167083dbc
+
