@@ -165,4 +165,5 @@ drain: 기존의 pod까지 옮겨버림
 playbook : (기능)동작을 정의한 파일(yaml) 
 inventory : Ansible이 제어하는 Infrastructure as Code 대상이 될 서버 목록 정의 파일
 
-
+● Playbook
+- yaml 포맷의 파일로서 인벤토리 파일에서 정의된 서버에서 어떤 작업 수행해야할지 정의
